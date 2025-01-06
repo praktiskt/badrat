@@ -6,20 +6,20 @@ from fastapi import FastAPI, Request
 import middleware
 from badrat import Badrat
 
-app = FastAPI()
-app.middleware("http")(
-    middleware.Badrat(
-        on_endpoints=["/.*"],
-        exclude_endpoints=["/health", "/slim", "/complete"],
-    ),
-)
-
-
 BADRAT_INCLUDE = os.getenv(
     "BADRAT_INCLUDE",
     "method,url,query_params,headers,cookies,body",
 )
 br = Badrat(include_in_request=BADRAT_INCLUDE.lower().split(","))
+
+app = FastAPI()
+app.middleware("http")(
+    middleware.Badrat(
+        on_endpoints=["/.*"],
+        exclude_endpoints=["/health", "/slim", "/complete"],
+        badrat_client=br,
+    ),
+)
 
 
 @app.get("/health")

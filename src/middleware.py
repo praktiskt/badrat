@@ -12,7 +12,7 @@ import baml_client
 if TYPE_CHECKING:
     from fastapi import Request
 
-    from src.baml_client.types import ResultComplete, ResultSlim
+    from baml_client.types import ResultComplete, ResultSlim
 
 
 class Badrat:
@@ -21,11 +21,12 @@ class Badrat:
         on_endpoints: list[str],
         exclude_endpoints: list[str] | None = None,
         complete_analysis=False,
+        badrat_client: badrat.Badrat = badrat.Badrat(),
     ) -> None:
         if exclude_endpoints is None:
             exclude_endpoints = []
         self.baml = baml_client.b
-        self.br = badrat.Badrat()
+        self.br = badrat_client
 
         for pat in on_endpoints:
             re.compile(pat)  # raises exception on bad regex
