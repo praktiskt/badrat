@@ -24,7 +24,7 @@ app.middleware("http")(
 
 @app.get("/health")
 async def root():
-    return {"Hello": "World"}
+    return {"health": "ok"}
 
 
 @app.get("/slim")
