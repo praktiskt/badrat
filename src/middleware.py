@@ -18,11 +18,13 @@ if TYPE_CHECKING:
 class Badrat:
     def __init__(
         self,
-        on_endpoints: list[str],
+        on_endpoints: list[str] | None = None,
         exclude_endpoints: list[str] | None = None,
         complete_analysis=False,
         badrat_client: badrat.Badrat = badrat.Badrat(),
     ) -> None:
+        if on_endpoints is None:
+            on_endpoints = ["/.*"]
         if exclude_endpoints is None:
             exclude_endpoints = []
         self.baml = baml_client.b

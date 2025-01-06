@@ -15,7 +15,7 @@ br = Badrat(include_in_request=BADRAT_INCLUDE.lower().split(","))
 app = FastAPI()
 app.middleware("http")(
     middleware.Badrat(
-        on_endpoints=["/.*"],
+        # on_endpoints=["/.*"], # default
         exclude_endpoints=["/health", "/slim", "/complete"],
         badrat_client=br,
     ),
