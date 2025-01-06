@@ -16,7 +16,7 @@ app = FastAPI()
 app.middleware("http")(
     middleware.Badrat(
         # on_endpoints=["/.*"], # default
-        exclude_endpoints=["/health", "/slim", "/complete"],
+        exclude_endpoints=["/health", "/slim", "/complete", "/docs"],
         badrat_client=br,
     ),
 )
