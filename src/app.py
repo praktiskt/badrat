@@ -40,7 +40,7 @@ async def complete(request: Request):
 
 
 @app.api_route(
-    "/{path:path}",
+    "/proxy/{path:path}",
     methods=["GET", "POST", "PUT", "DELETE", "HEAD", "OPTIONS", "PATCH"],
 )
 async def catch_all():
