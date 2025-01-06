@@ -15,7 +15,7 @@ app = FastAPI()
 app.middleware("http")(
     middleware.Badrat(
         # on_endpoints=["/.*"], # default
-        exclude_endpoints=["/health", "/slim/.*", "/complete/.*", "/docs"],
+        exclude_endpoints=["/health", "/slim", "/complete", "/docs"],
         badrat_client=br,
     ),
 )
@@ -24,6 +24,15 @@ app.middleware("http")(
 @app.get("/health")
 async def root():
     return {"health": "ok"}
+
+
+@app.api_route(
+    "/slim",
+    methods=["GET", "POST", "PUT", "DELETE", "HEAD", "OPTIONS", "PATCH"],
+)
+async def slim_default(request: Request):
+    """All /slim endpoints consume and return as few tokens as possible from the backing LLM."""
+    return await br.analyze_slim(request)
 
 
 @app.api_route(
@@ -36,9 +45,20 @@ async def slim(request: Request):
 
 
 @app.api_route(
+    "/complete",
+    methods=["GET", "POST", "PUT", "DELETE", "HEAD", "OPTIONS", "PATCH"],
+)
+async def complete_default(request: Request):
+    print("hi")
+    """All /complete endpoints return a more lengthy report and will consume more generation tokens from the backing LLM."""
+    return await br.analyze_complete(request)
+
+
+@app.api_route(
     "/complete/{path:path}",
     methods=["GET", "POST", "PUT", "DELETE", "HEAD", "OPTIONS", "PATCH"],
 )
 async def complete(request: Request):
+    print("hi")
     """All /complete endpoints return a more lengthy report and will consume more generation tokens from the backing LLM."""
     return await br.analyze_complete(request)
