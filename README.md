@@ -8,10 +8,10 @@ Make sure `GROQ_API_KEY` is set, and then:
 
 ```sh
 # In one shell
-make fastapi-dev
+make dev-fastapi
 
 # In another shell
-make baml-dev
+make dev-baml
 ```
 
 Now you can send requests to check how malicious they are:
