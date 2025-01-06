@@ -21,10 +21,14 @@ curl -s http://localhost:8000/slim?path=../../ | jq
 #   "possibly_dangerous": true
 # }
 
-curl -s http://localhost:8000/complete?path=../../ | jq
+curl -s http://localhost:8000/complete?path=../../ -H "Authorization: Bearer Robert'); DROP TABLE students; --" | jq
 # {
 #   "possibly_dangerous": true,
 #   "dangerous_parameters": [
+#     {
+#       "parameter_path": "headers.authorization",
+#       "value": "Bearer Robert'); DROP TABLE students; --"
+#     },
 #     {
 #       "parameter_path": "url.query.path",
 #       "value": "../../"
