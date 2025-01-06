@@ -27,21 +27,19 @@ async def root():
     return {"health": "ok"}
 
 
-@app.get("/slim")
+@app.api_route(
+    "/slim/{path:path}",
+    methods=["GET", "POST", "PUT", "DELETE", "HEAD", "OPTIONS", "PATCH"],
+)
 async def slim(request: Request):
     req = await br.parse_request(request)
     return br.baml.ClassifyDangerousSlim(json.dumps(req))
 
 
-@app.get("/complete")
+@app.api_route(
+    "/complete/{path:path}",
+    methods=["GET", "POST", "PUT", "DELETE", "HEAD", "OPTIONS", "PATCH"],
+)
 async def complete(request: Request):
     req = await br.parse_request(request)
     return br.baml.ClassifyDangerousComplete(json.dumps(req))
-
-
-@app.api_route(
-    "/proxy/{path:path}",
-    methods=["GET", "POST", "PUT", "DELETE", "HEAD", "OPTIONS", "PATCH"],
-)
-async def catch_all():
-    return {}
