@@ -31,6 +31,7 @@ async def root():
     methods=["GET", "POST", "PUT", "DELETE", "HEAD", "OPTIONS", "PATCH"],
 )
 async def slim(request: Request):
+    """All /slim endpoints consume and return as few tokens as possible from the backing LLM."""
     return await br.analyze_slim(request)
 
 
@@ -39,4 +40,5 @@ async def slim(request: Request):
     methods=["GET", "POST", "PUT", "DELETE", "HEAD", "OPTIONS", "PATCH"],
 )
 async def complete(request: Request):
+    """All /complete endpoints return a more lengthy report and will consume more generation tokens from the backing LLM."""
     return await br.analyze_complete(request)
