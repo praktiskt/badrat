@@ -1,25 +1,66 @@
-import json
+from __future__ import annotations
 
-from fastapi import Request
+import json
+import re
+from typing import TYPE_CHECKING
+
 from fastapi.responses import JSONResponse
 
 import badrat
 import baml_client
 
+if TYPE_CHECKING:
+    from fastapi import Request
+
+    from src.baml_client.types import ResultComplete, ResultSlim
+
 
 class Badrat:
-    def __init__(self) -> None:
+    def __init__(
+        self,
+        on_endpoints: list[str],
+        exclude_endpoints: list[str] | None = None,
+        complete_analysis=False,
+    ) -> None:
+        if exclude_endpoints is None:
+            exclude_endpoints = []
         self.baml = baml_client.b
         self.br = badrat.Badrat()
+
+        for pat in on_endpoints:
+            re.compile(pat)  # raises exception on bad regex
+        for pat in exclude_endpoints:
+            re.compile(pat)  # raises exception on bad regex
+
+        self.on_endpoints = on_endpoints
+        self.exclude_endpoints = exclude_endpoints
+        self.complete_analysis = complete_analysis
+
+    def can_ignore_request(self, request: Request) -> bool:
+        for pat in self.exclude_endpoints:
+            if re.match(pat, request.url.path):
+                return True
+
+        return all(not re.match(pat, request.url.path) for pat in self.on_endpoints)
+
+    async def check(self, request: Request) -> ResultSlim | ResultComplete:
+        req = await self.br.parse_request(request)
+
+        if self.complete_analysis:
+            return self.baml.ClassifyDangerousComplete(json.dumps(req))
+
+        return self.baml.ClassifyDangerousSlim(json.dumps(req))
 
     async def __call__(
         self,
         request: Request,
         call_next,
     ):
-        req = await self.br.parse_request(request)
-        resp = self.baml.ClassifyDangerousComplete(json.dumps(req))
+        if self.can_ignore_request(request):
+            return await call_next(request)
+
+        resp = await self.check(request)
         if resp.possibly_dangerous:
-            return JSONResponse(resp.dict())
+            return JSONResponse(content=resp.dict(), status_code=403)
 
         return await call_next(request)
