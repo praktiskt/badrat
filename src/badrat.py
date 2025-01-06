@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import json
 from typing import TYPE_CHECKING
 from urllib.parse import urlparse
 
@@ -63,3 +64,11 @@ class Badrat:
             result["body"] = body.decode()
 
         return result
+
+    async def analyze_slim(self, request: Request):
+        req = await self.parse_request(request)
+        return self.baml.ClassifyDangerousSlim(json.dumps(req))
+
+    async def analyze_complete(self, request: Request):
+        req = await self.parse_request(request)
+        return self.baml.ClassifyDangerousComplete(json.dumps(req))

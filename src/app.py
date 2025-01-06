@@ -1,4 +1,3 @@
-import json
 import os
 
 from fastapi import FastAPI, Request
@@ -16,7 +15,7 @@ app = FastAPI()
 app.middleware("http")(
     middleware.Badrat(
         # on_endpoints=["/.*"], # default
-        exclude_endpoints=["/health", "/slim", "/complete", "/docs"],
+        exclude_endpoints=["/health", "/slim/.*", "/complete/.*", "/docs"],
         badrat_client=br,
     ),
 )
@@ -32,8 +31,7 @@ async def root():
     methods=["GET", "POST", "PUT", "DELETE", "HEAD", "OPTIONS", "PATCH"],
 )
 async def slim(request: Request):
-    req = await br.parse_request(request)
-    return br.baml.ClassifyDangerousSlim(json.dumps(req))
+    return await br.analyze_slim(request)
 
 
 @app.api_route(
@@ -41,5 +39,4 @@ async def slim(request: Request):
     methods=["GET", "POST", "PUT", "DELETE", "HEAD", "OPTIONS", "PATCH"],
 )
 async def complete(request: Request):
-    req = await br.parse_request(request)
-    return br.baml.ClassifyDangerousComplete(json.dumps(req))
+    return await br.analyze_complete(request)
