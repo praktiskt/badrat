@@ -1,3 +1,5 @@
+.PHONY: generate dev-fastapi dev-baml docker-build docker-tag docker-push
+
 IMAGE_NAME ?= badrat
 IMAGE_TAG ?= build
 
