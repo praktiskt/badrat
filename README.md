@@ -1,6 +1,6 @@
 # badrat
 
-We all know LLMs are 100% reliable and can never be wrong, so let's have it check if an HTTP request is potentially malicious or not.
+We all know LLMs are 100% reliable so let's have it check if a HTTP request is potentially malicious or not.
 
 ## Development
 
