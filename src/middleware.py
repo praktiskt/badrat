@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import json
 import re
 from typing import TYPE_CHECKING
 
@@ -47,12 +46,10 @@ class Badrat:
         return all(not re.match(pat, request.url.path) for pat in self.on_endpoints)
 
     async def check(self, request: Request) -> ResultSlim | ResultComplete:
-        req = await self.br.parse_request(request)
-
         if self.complete_analysis:
-            return self.baml.ClassifyDangerousComplete(json.dumps(req))
+            return await self.br.analyze_complete(request)
 
-        return self.baml.ClassifyDangerousSlim(json.dumps(req))
+        return await self.br.analyze_slim(request)
 
     async def __call__(
         self,
@@ -62,8 +59,7 @@ class Badrat:
         if self.can_ignore_request(request):
             return await call_next(request)
 
-        resp = await self.check(request)
-        if resp.possibly_dangerous:
+        if resp := await self.check(request):
             return JSONResponse(content=resp.dict(), status_code=403)
 
         return await call_next(request)
