@@ -2,6 +2,16 @@
 
 We all know LLMs are 100% reliable so let's have it check if a HTTP request is potentially malicious or not.
 
+## Running
+
+Make sure `GROQ_API_KEY` is set, and then:
+
+```sh
+docker run -e GROQ_API_KEY -p 8080:8080 praktiskt/badrat:latest --port 8080
+```
+
+Now visit `/docs`, or send any kind of HTTP request towards `/slim` or `/complete` (see example below).
+
 ## Development
 
 Make sure `GROQ_API_KEY` is set, and then:
