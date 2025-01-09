@@ -16,7 +16,6 @@ class Badrat:
         "url",
         "query_params",
         "headers",
-        "cookies",
         "body",
     )
 
@@ -27,7 +26,6 @@ class Badrat:
             "url",
             "query_params",
             "headers",
-            "cookies",
             "body",
         ),
     ) -> None:
@@ -58,8 +56,6 @@ class Badrat:
             result["url"] = {k: v for k, v in result["url"].items() if v is not None}
         if "headers" in self.incl and request.headers:
             result["headers"] = dict(request.headers)
-        if "cookies" in self.incl and request.cookies:
-            result["cookies"] = dict(request.cookies)
         if "body" in self.incl and body:
             result["body"] = body.decode()
 

@@ -7,7 +7,7 @@ from badrat import Badrat
 
 BADRAT_INCLUDE = os.getenv(
     "BADRAT_INCLUDE",
-    "method,url,query_params,headers,cookies,body",
+    "method,url,query_params,headers,body",
 )
 br = Badrat(include_in_request=BADRAT_INCLUDE.lower().split(","))
 
