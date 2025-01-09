@@ -59,7 +59,8 @@ class BadratMiddleware:
         if self.can_ignore_request(request):
             return await call_next(request)
 
-        if resp := await self.check(request):
+        resp = await self.check(request)
+        if resp.possibly_dangerous:
             return JSONResponse(content=resp.dict(), status_code=403)
 
         return await call_next(request)
