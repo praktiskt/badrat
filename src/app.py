@@ -2,20 +2,19 @@ import os
 
 from fastapi import FastAPI, Request
 
-import middleware
-from badrat import Badrat
+import badrat
 
 BADRAT_INCLUDE = os.getenv(
     "BADRAT_INCLUDE",
     "method,url,query_params,headers,body",
 )
-br = Badrat(include_in_request=BADRAT_INCLUDE.lower().split(","))
+br = badrat.Badrat(include_in_request=BADRAT_INCLUDE.lower().split(","))
 
 app = FastAPI()
 app.middleware("http")(
-    middleware.Badrat(
+    badrat.BadratMiddleware(
         # on_endpoints=["/.*"], # default
-        exclude_endpoints=["/health", "/slim", "/complete", "/docs"],
+        exclude_endpoints=["/health", "/slim", "/complete", "/docs", "/openapi.json"],
         badrat_client=br,
     ),
 )

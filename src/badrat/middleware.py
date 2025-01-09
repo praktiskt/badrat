@@ -14,7 +14,7 @@ if TYPE_CHECKING:
     from baml_client.types import ResultComplete, ResultSlim
 
 
-class Badrat:
+class BadratMiddleware:
     def __init__(
         self,
         on_endpoints: list[str] | None = None,

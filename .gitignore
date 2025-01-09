@@ -1,3 +1,3 @@
 .venv
-src/baml_client
+baml_client
 __pycache__
